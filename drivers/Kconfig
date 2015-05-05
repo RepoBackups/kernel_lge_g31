@@ -159,3 +159,9 @@ source "drivers/sensors/Kconfig"
 source "drivers/felica/Kconfig"
 
 endmenu
+
+menu "KControl Module"
+
+source "drivers/gpu/kcontrol_module/Kconfig"
+
+endmenu

@@ -155,3 +155,5 @@ obj-$(CONFIG_LGE_FELICA)        += felica/
 
 obj-$(CONFIG_BIF)		+= bif/
 obj-$(CONFIG_SENSORS)		+= sensors/
+
+obj-$(CONFIG_KCONTROL_GPU_MODULE_MSM)   += gpu/
