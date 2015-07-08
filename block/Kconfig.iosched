@@ -62,7 +62,7 @@ config IOSCHED_CFQ
 	  Note: If BLK_CGROUP=m, then CFQ can be built only as module.
 
 config IOSCHED_FIFO
- 	 bool
+ 	 tristate "FiFo I/O Scheduler"
  	 default y
  	 ---help---
  	 Fifo is similar to no-op I/O scheduler and it's a minimal scheduler that does basic merging and sorting.
