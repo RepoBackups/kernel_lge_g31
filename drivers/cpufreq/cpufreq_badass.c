@@ -1107,7 +1107,6 @@ static void bds_check_cpu(struct cpu_bds_info_s *this_bds_info)
 				new_phase_max = bds_tuners_ins.three_phase_freq;
 			}
 			bds_freq_increase(policy, new_phase_max);
-#endif
 		} else {
 			/* busy phase */
 			if (policy->cur < policy->max)
