@@ -682,6 +682,10 @@ config CPU_FREQ_GOV_SMARTMAX_M7
         bool "'smartmax' defaults for m7"
         depends on CPU_FREQ_GOV_SMARTMAX || CPU_FREQ_GOV_SMARTMAX_EPS
 
+config CPU_FREQ_GOV_SMARTMAX_G3
+        bool "'smartmax' defaults for g3"
+        depends on CPU_FREQ_GOV_SMARTMAX || CPU_FREQ_GOV_SMARTMAX_EPS
+
 config CPU_FREQ_GOV_PRESERVATIVE
 	tristate "'preservative' cpufreq governor"
 	help
