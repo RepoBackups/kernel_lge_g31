@@ -50,6 +50,13 @@
 #include "../platsmp.h"
 #include <mach/board_lge.h>
 
+#ifdef CONFIG_CPU_FREQ_GOV_BADASS_2_PHASE
+int set_two_phase_freq_badass(int cpufreq);
+#endif
+#ifdef CONFIG_CPU_FREQ_GOV_BADASS_3_PHASE
+int set_three_phase_freq_badass(int cpufreq);
+#endif
+
 #ifdef CONFIG_MFD_WM5110
 #include <linux/slimbus/slimbus.h>
 #endif
@@ -236,6 +243,13 @@ void __init msm8974_init(void)
 
 	if (socinfo_init() < 0)
 		pr_err("%s: socinfo_init() failed\n", __func__);
+
+#ifdef CONFIG_CPU_FREQ_GOV_BADASS_2_PHASE
+set_two_phase_freq_badass(CONFIG_CPU_FREQ_GOV_BADASS_2_PHASE_FREQ);
+#endif
+#ifdef CONFIG_CPU_FREQ_GOV_BADASS_3_PHASE	
+set_three_phase_freq_badass(CONFIG_CPU_FREQ_GOV_BADASS_3_PHASE_FREQ);
+#endif
 
 	msm_8974_init_gpiomux();
 	regulator_has_full_constraints();
