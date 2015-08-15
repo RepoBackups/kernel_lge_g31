@@ -24,9 +24,7 @@
  */
 
 #include "msm_mpdecision.h"
-#ifdef CONFIG_POWERSUSPEND
-#include <linux/powersuspend.h>
-#elif defined(CONFIG_LCD_NOTIFY)
+#ifndef CONFIG_HAS_EARLYSUSPEND
 #include <linux/lcd_notify.h>
 #else
 #include <linux/earlysuspend.h>
@@ -53,7 +51,7 @@ DEFINE_PER_CPU(struct msm_mpdec_cpudata_t, msm_mpdec_cpudata);
 EXPORT_PER_CPU_SYMBOL_GPL(msm_mpdec_cpudata);
 
 static bool mpdec_suspended = false;
-#ifdef CONFIG_LCD_NOTIFY
+#ifndef CONFIG_HAS_EARLYSUSPEND
 static struct notifier_block msm_mpdec_lcd_notif;
 #endif
 static struct delayed_work msm_mpdec_work;
@@ -614,26 +612,7 @@ static void msm_mpdec_resume(struct work_struct * msm_mpdec_suspend_work) {
 }
 static DECLARE_WORK(msm_mpdec_resume_work, msm_mpdec_resume);
 
-#ifdef CONFIG_POWERSUSPEND
-static void msm_mpdec_suspend(struct power_suspend *handler)
-{
-	INIT_DELAYED_WORK(&suspend_work, bricked_hotplug_suspend);
-	queue_delayed_work_on(0, susp_wq, &suspend_work,
-			msecs_to_jiffies(hotplug.suspend_defer_time * 1000));
-}
-
-static void msm_mpdec_resume(struct power_suspend *handler)
-{
-	flush_workqueue(susp_wq);
-	cancel_delayed_work_sync(&suspend_work);
-	queue_work_on(0, susp_wq, &resume_work);
-}
-
-static struct power_suspend bricked_hotplug_power_suspend_driver = {
-	.suspend = msm_mpdec_suspend,
-	.resume = msm_mpdec_resume,
-};
-#elif defined(CONFIG_LCD_NOTIFY)
+#ifndef CONFIG_HAS_EARLYSUSPEND
 static int msm_mpdec_lcd_notifier_callback(struct notifier_block *this,
 				unsigned long event, void *data) {
 	pr_debug("%s: event = %lu\n", __func__, event);
@@ -1239,9 +1218,7 @@ static int __init msm_mpdec_init(void) {
 	pr_info(MPDEC_TAG"%s init complete.", __func__);
 
 
-#ifdef CONFIG_POWERSUSPEND
-	register_power_suspend(&bricked_hotplug_power_suspend_driver);
-#elif defined(CONFIG_LCD_NOTIFY)
+#ifndef CONFIG_HAS_EARLYSUSPEND
 	msm_mpdec_lcd_notif.notifier_call = msm_mpdec_lcd_notifier_callback;
 	if (lcd_register_client(&msm_mpdec_lcd_notif) != 0) {
 		pr_err("%s: Failed to register lcd callback\n", __func__);
@@ -1257,9 +1234,7 @@ static int __init msm_mpdec_init(void) {
 late_initcall(msm_mpdec_init);
 
 void msm_mpdec_exit(void) {
-#ifdef CONFIG_POWERSUSPEND
-	unregister_power_suspend(&bricked_hotplug_power_suspend_driver);
-#elif defined(CONFIG_LCD_NOTIFY)
+#ifndef CONFIG_HAS_EARLYSUSPEND
 	lcd_unregister_client(&msm_mpdec_lcd_notif);
 #endif
 #ifdef CONFIG_MSM_MPDEC_INPUTBOOST_CPUMIN
